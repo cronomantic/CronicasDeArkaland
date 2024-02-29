@@ -1,0 +1,22 @@
+[[
+    #Inicio
+    PAGEPAUSE 1
+    BORDER 0
+    INK 7
+    BRIGHT 1
+    FLASH 0
+    PAPER 0
+    CLEAR
+]]
+[[REPCHAR 42,42]]
+*[[TAB 40]]*
+*[[TAB 10]]CRONICAS DE ARKALAND[[TAB 10]]*
+*[[TAB 40]]*
+*[[TAB 11]]de Javier San José[[TAB 11]]*
+*[[TAB 40]]*
+[[REPCHAR 42,42]]
+
+[[TAB 3]]Publicado en CAAD, del num. 1 al 10.
+
+
+[[AT 31,23]][[WAITKEY]]
