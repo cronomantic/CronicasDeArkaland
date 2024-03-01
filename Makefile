@@ -1,4 +1,4 @@
-NAME:=CronicasDeArkaland
+NAME:=CronicasDeArkaland_dia1
 CYD_FILENAME:=$(NAME).cyd
 
 TAP_TARGET:=48k
