@@ -1,4 +1,4 @@
-# Cronicas De Arkaland
+# Cronicas De Arkoland
 
 Juego de demostración de [ChooseYourDestiny](https://github.com/cronomantic/ChooseYourDestiny) basado en el librojuego creado por Javier San José para [CAAD](https://caad.club/) en los números 1 al 10, creado bajo permiso del autor.
 
