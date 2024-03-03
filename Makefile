@@ -1,4 +1,4 @@
-NAME:=CronicasDeArkoland_dia2
+NAME:=CronicasDeArkoland_dia3
 CYD_FILENAME:=$(NAME).cyd
 
 TAP_TARGET:=48k
@@ -20,6 +20,12 @@ PT3_LIST := $(shell find ./TRACKS -type f -iregex '\.\/TRACKS\/[0-9][0-9][0-9].p
 FILELIST = $(CYD_FILENAME) $(CSC_LIST) $(PT3_LIST) $(BEEPFX_ASM_FILENAME)
 
 
+ifneq (,$(wildcard ./charset.json))
+CHARSET_PARAM = -c ./charset.json
+else
+CHARSET_PARAM =
+endif
+
 disk: $(NAME).DSK
 
 tape: $(NAME).TAP
@@ -33,16 +39,16 @@ $(NAME).DSK: $(FILELIST)
 ifeq (,$(wildcard ./tokens.json))
 # Token file does not exists, create a new one
 ifneq (,$(wildcard ./$(BEEPFX_ASM_FILENAME)))
-	python $(CYDC_PATH)/cydc.py -v -T tokens.json -scr ./IMAGES/LOAD.SCR -csc ./IMAGES -pt3 ./TRACKS -sfx $(BEEPFX_ASM_FILENAME) plus3 $(CYD_FILENAME) $(ASM) $(MKP3FS) .
+	python $(CYDC_PATH)/cydc.py -v -T tokens.json $(CHARSET_PARAM) -scr ./IMAGES/LOAD.SCR -csc ./IMAGES -pt3 ./TRACKS -sfx $(BEEPFX_ASM_FILENAME) plus3 $(CYD_FILENAME) $(ASM) $(MKP3FS) .
 else
-	python $(CYDC_PATH)/cydc.py -v -T tokens.json -scr ./IMAGES/LOAD.SCR -csc ./IMAGES -pt3 ./TRACKS plus3 $(CYD_FILENAME) $(ASM) $(MKP3FS) .
+	python $(CYDC_PATH)/cydc.py -v -T tokens.json $(CHARSET_PARAM) -scr ./IMAGES/LOAD.SCR -csc ./IMAGES -pt3 ./TRACKS plus3 $(CYD_FILENAME) $(ASM) $(MKP3FS) .
 endif
 else
 # Token file exists, use it...
 ifneq (,$(wildcard ./$(BEEPFX_ASM_FILENAME)))
-	python $(CYDC_PATH)/cydc.py -v -t tokens.json -scr ./IMAGES/LOAD.SCR -csc ./IMAGES -pt3 ./TRACKS -sfx $(BEEPFX_ASM_FILENAME) plus3 $(CYD_FILENAME) $(ASM) $(MKP3FS) .
+	python $(CYDC_PATH)/cydc.py -v -t tokens.json $(CHARSET_PARAM) -scr ./IMAGES/LOAD.SCR -csc ./IMAGES -pt3 ./TRACKS -sfx $(BEEPFX_ASM_FILENAME) plus3 $(CYD_FILENAME) $(ASM) $(MKP3FS) .
 else
-	python $(CYDC_PATH)/cydc.py -v -t tokens.json -scr ./IMAGES/LOAD.SCR -csc ./IMAGES -pt3 ./TRACKS $(CYD_FILENAME) plus3 $(ASM) $(MKP3FS) .
+	python $(CYDC_PATH)/cydc.py -v -t tokens.json $(CHARSET_PARAM) -scr ./IMAGES/LOAD.SCR -csc ./IMAGES -pt3 ./TRACKS $(CYD_FILENAME) plus3 $(ASM) $(MKP3FS) .
 endif
 endif
 
@@ -50,16 +56,16 @@ $(NAME).TAP: $(FILELIST)
 ifeq (,$(wildcard ./tokens.json))
 # Token file does not exists, create a new one
 ifneq (,$(wildcard ./$(BEEPFX_ASM_FILENAME)))
-	python $(CYDC_PATH)/cydc.py -v -T tokens.json -scr ./IMAGES/LOAD.SCR -csc ./IMAGES -pt3 ./TRACKS -sfx $(BEEPFX_ASM_FILENAME) $(TAP_TARGET) $(CYD_FILENAME) $(ASM) $(MKP3FS) .
+	python $(CYDC_PATH)/cydc.py -v -T tokens.json $(CHARSET_PARAM) -scr ./IMAGES/LOAD.SCR -csc ./IMAGES -pt3 ./TRACKS -sfx $(BEEPFX_ASM_FILENAME) $(TAP_TARGET) $(CYD_FILENAME) $(ASM) $(MKP3FS) .
 else
-	python $(CYDC_PATH)/cydc.py -v -T tokens.json -scr ./IMAGES/LOAD.SCR -csc ./IMAGES -pt3 ./TRACKS $(TAP_TARGET) $(CYD_FILENAME) $(ASM)  $(MKP3FS) .
+	python $(CYDC_PATH)/cydc.py -v -T tokens.json $(CHARSET_PARAM) -scr ./IMAGES/LOAD.SCR -csc ./IMAGES -pt3 ./TRACKS $(TAP_TARGET) $(CYD_FILENAME) $(ASM)  $(MKP3FS) .
 endif
 else
 # Token file exists, use it...
 ifneq (,$(wildcard ./$(BEEPFX_ASM_FILENAME)))
-	python $(CYDC_PATH)/cydc.py -v -t tokens.json -scr ./IMAGES/LOAD.SCR -csc ./IMAGES -pt3 ./TRACKS -sfx $(BEEPFX_ASM_FILENAME) $(TAP_TARGET) $(CYD_FILENAME) $(ASM) $(MKP3FS) .
+	python $(CYDC_PATH)/cydc.py -v -t tokens.json $(CHARSET_PARAM) -scr ./IMAGES/LOAD.SCR -csc ./IMAGES -pt3 ./TRACKS -sfx $(BEEPFX_ASM_FILENAME) $(TAP_TARGET) $(CYD_FILENAME) $(ASM) $(MKP3FS) .
 else
-	python $(CYDC_PATH)/cydc.py -v -t tokens.json -scr ./IMAGES/LOAD.SCR -csc ./IMAGES -pt3 ./TRACKS $(CYD_FILENAME) $(TAP_TARGET) $(ASM) $(MKP3FS) .
+	python $(CYDC_PATH)/cydc.py -v -t tokens.json $(CHARSET_PARAM) -scr ./IMAGES/LOAD.SCR -csc ./IMAGES -pt3 ./TRACKS $(CYD_FILENAME) $(TAP_TARGET) $(ASM) $(MKP3FS) .
 endif
 endif
 

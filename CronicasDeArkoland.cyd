@@ -54,7 +54,7 @@ Ahora se detallará el sistema de juego. ¿Deseas leerlo antes?
     #SaltarManual
     CENTER : WAITKEY]]
 
-
+[[/*--------------------------------------*/]]
 [[
     /* Cabecera genérica*/
     PAGEPAUSE 1
@@ -126,3 +126,70 @@ Ahora se detallará el sistema de juego. ¿Deseas leerlo antes?
 
 [[TAB 4: OPTION GOTO Reroll : INK 2]]No.[[INK 7]]
 [[CHOOSE]][[CENTER : WAITKEY : GOTO GeneracionPersonaje]]
+
+
+[[/*--------------------------------------*/]]
+
+[[
+    /* Cabecera genérica*/
+    PAGEPAUSE 1
+    BORDER 0
+    BRIGHT 1
+    FLASH 0
+    PAPER 0
+    CLEAR
+    INK 7
+]][[
+    
+    DECLARE 11 AS rejillaCabeza
+    DECLARE 12 AS rejillaBrazoIzq
+    DECLARE 13 AS rejillaBrazoDer
+    DECLARE 14 AS rejillaPiernaIzq
+    DECLARE 15 AS rejillaPiernaDer
+    DECLARE 16 AS rejillaCuerpo
+
+    DECLARE 17 AS filaRejilla
+    DECLARE 18 AS columnaRejilla
+    DECLARE 19 AS valorCasillaRejilla
+
+    SET columnaRejilla TO 10
+    SET filaRejilla TO 4
+
+    GOSUB imprimeRejilla
+
+]][[CENTER : WAITKEY : END
+
+    /* Subrutina imprimeRejilla */
+    #imprimeRejilla
+    AT @columnaRejilla, @filaRejilla
+    CHAR 32 : CHAR 32 : CHAR 32 : CHAR 148 : CHAR 145 : CHAR 145 : CHAR 149 : CHAR 32 : CHAR 32 : CHAR 32
+    AT @columnaRejilla, @filaRejilla + 1
+    CHAR 32 : CHAR 32 : CHAR 32 : CHAR 144 : SET valorCasillaRejilla TO @rejillaCabeza : GOSUB imprimeValorCasillaRejilla : CHAR 144 : CHAR 32 : CHAR 32 : CHAR 32
+    AT @columnaRejilla, @filaRejilla + 2
+    CHAR 148 : CHAR 145 : CHAR 145 : CHAR 154 : CHAR 145 : CHAR 145 : CHAR 154 : CHAR 145 : CHAR 145 : CHAR 149
+    AT @columnaRejilla, @filaRejilla + 3
+    CHAR 144 : SET valorCasillaRejilla TO @rejillaBrazoIzq : GOSUB imprimeValorCasillaRejilla
+    CHAR 144 : SET valorCasillaRejilla TO @rejillaCabeza : GOSUB imprimeValorCasillaRejilla
+    CHAR 144 : SET valorCasillaRejilla TO @rejillaBrazoDer : GOSUB imprimeValorCasillaRejilla : CHAR 144
+    AT @columnaRejilla, @filaRejilla + 4
+    CHAR 150 : CHAR 145 : CHAR 145 : CHAR 154 : CHAR 145 : CHAR 145 : CHAR 154 : CHAR 145 : CHAR 145 : CHAR 151
+    AT @columnaRejilla, @filaRejilla + 5
+    CHAR 144 : SET valorCasillaRejilla TO @rejillaPiernaIzq : GOSUB imprimeValorCasillaRejilla
+    CHAR 144 : CHAR 32 : CHAR 32 : CHAR 144
+    SET valorCasillaRejilla TO @rejillaPiernaDer : GOSUB imprimeValorCasillaRejilla : CHAR 144
+    AT @columnaRejilla, @filaRejilla + 6
+    CHAR 146 : CHAR 145 : CHAR 145 : CHAR 147 : CHAR 32 : CHAR 32 : CHAR 146 : CHAR 145 : CHAR 145 : CHAR 147
+    RETURN
+    /**********************************/
+
+    /* Subrutina imprimeValorCasillaRejilla */
+    #imprimeValorCasillaRejilla
+    IF @valorCasillaRejilla < 100 THEN GOTO imprimeValorCasillaRejillaDecenas
+    PRINT 99 : RETURN
+    #imprimeValorCasillaRejillaDecenas
+    IF @valorCasillaRejilla < 10 THEN GOTO imprimeValorCasillaRejillaUnidades
+    PRINT @valorCasillaRejilla : RETURN
+    #imprimeValorCasillaRejillaUnidades
+    CHAR 32 : PRINT @valorCasillaRejilla : RETURN
+    /**********************************/
+]]
