@@ -25,6 +25,26 @@
     DECLARE 18 AS columnaRejilla
     DECLARE 19 AS valorCasillaRejilla
 
+    DECLARE 20 AS puntosVitalesProtagonista
+    DECLARE 21 AS proteccionCabezaProtagonista
+    DECLARE 22 AS proteccionBrazoIzqProtagonista
+    DECLARE 23 AS proteccionBrazoDerProtagonista
+    DECLARE 24 AS proteccionPiernaIzqProtagonista
+    DECLARE 25 AS proteccionPiernaDerProtagonista
+    DECLARE 26 AS proteccionCuerpoProtagonista
+    DECLARE 27 AS destrezaProtagonista
+    DECLARE 28 AS suerteProtagonista
+
+    DECLARE 29 AS idEnemigo
+    DECLARE 30 AS puntosVitalesEnemigo
+    DECLARE 31 AS proteccionCabezaEnemigo
+    DECLARE 32 AS proteccionBrazoIzqEnemigo
+    DECLARE 33 AS proteccionBrazoDerEnemigo
+    DECLARE 34 AS proteccionPiernaIzqEnemigo
+    DECLARE 35 AS proteccionPiernaDerEnemigo
+    DECLARE 36 AS proteccionCuerpoEnemigo
+    DECLARE 37 AS destrezaEnemigo
+
     #Inicio
     /* Cabecera genérica*/
     PAGEPAUSE 1
@@ -34,9 +54,78 @@
     PAPER 0
     CLEAR
     INK 7
-]][[CENTER : WAITKEY :END]]
+]][[
+    GOSUB recalcularEstadisticasProta
+    SET idEnemigo TO 6
+    GOSUB imprimeEstadoCombatientes
+    MARGINS 15, 0, 17, 24
+    CENTER : WAITKEY : END]]
 [[
-    /* Subrutina imprimeEstadisticasJugador */
+    #imprimeEstadoCombatientes
+    MARGINS 0, 0, 15, 24
+    CLEAR
+    SET rejillaCabeza TO @proteccionCabezaProtagonista
+    SET rejillaBrazoIzq TO @proteccionBrazoIzqProtagonista
+    SET rejillaBrazoDer TO @proteccionBrazoDerProtagonista
+    SET rejillaPiernaIzq TO @proteccionPiernaIzqProtagonista
+    SET rejillaPiernaDer TO @proteccionPiernaDerProtagonista
+    SET rejillaCuerpo TO @proteccionCuerpoProtagonista
+
+    AT 0, 2 ]]P.V.:[[ PRINT @puntosVitalesProtagonista
+    AT 0, 4 ]]Des.:[[ PRINT @destrezaProtagonista
+    AT 0, 6 ]]Sue.:[[ PRINT @suerteProtagonista
+    AT 0, 8 ]]Dob.:[[ PRINT @NumDoblones
+    SET columnaRejilla TO 6
+    SET filaRejilla TO 2
+    GOSUB imprimeRejilla
+
+    SET rejillaCabeza TO @proteccionCabezaEnemigo
+    SET rejillaBrazoIzq TO @proteccionBrazoIzqEnemigo
+    SET rejillaBrazoDer TO @proteccionBrazoDerEnemigo
+    SET rejillaPiernaIzq TO @proteccionPiernaIzqEnemigo
+    SET rejillaPiernaDer TO @proteccionPiernaDerEnemigo
+    SET rejillaCuerpo TO @proteccionCuerpoEnemigo
+    AT 0, 13 : GOSUB imprimeIdEnemigo
+    AT 0, 16 ]]P.V.:[[ PRINT @puntosVitalesEnemigo
+    AT 0, 18 ]]Des.:[[ PRINT @destrezaEnemigo
+    SET columnaRejilla TO 6
+    SET filaRejilla TO 14
+    GOSUB imprimeRejilla
+    RETURN
+    /****************************************/
+]][[
+    #imprimeIdEnemigo
+    IF @idEnemigo > 0 THEN GOTO imprimeIdEnemigo1
+    ]]Hombre Lagarto[[ RETURN
+    #imprimeIdEnemigo1
+    IF @idEnemigo > 1 THEN GOTO imprimeIdEnemigo2
+    ]]Jinete[[ RETURN
+    #imprimeIdEnemigo2
+    IF @idEnemigo > 2 THEN GOTO imprimeIdEnemigo3
+    ]]Goblin[[ RETURN
+    #imprimeIdEnemigo3
+    IF @idEnemigo > 3 THEN GOTO imprimeIdEnemigo4
+    ]]Rey Fantasma[[ RETURN
+    #imprimeIdEnemigo4
+    IF @idEnemigo > 4 THEN GOTO imprimeIdEnemigo5
+    ]]Dragón[[ RETURN
+    #imprimeIdEnemigo5
+    IF @idEnemigo > 5 THEN GOTO imprimeIdEnemigo6
+    ]]Troll[[ RETURN
+    #imprimeIdEnemigo6
+    IF @idEnemigo > 6 THEN GOTO imprimeIdEnemigo7
+    ]]Monstruo de Gelatina[[ RETURN
+    #imprimeIdEnemigo7
+    IF @idEnemigo > 7 THEN GOTO imprimeIdEnemigo8
+    ]]Demonio[[ RETURN
+    #imprimeIdEnemigo8
+    IF @idEnemigo > 8 THEN GOTO imprimeIdEnemigo9
+    ]]Demonio[[ RETURN
+    #imprimeIdEnemigo9
+
+    ]]DON NADIE[[ RETURN
+    /****************************************/
+]][[
     #imprimeEstadisticasJugador
     SET rejillaCabeza TO @ProteccionCabeza
     SET rejillaBrazoIzq TO @ProteccionBrazoIzq
@@ -61,10 +150,8 @@
     INK 7 
     GOSUB imprimeRejilla
     RETURN
-
     /****************************************/
-
-    /* Subrutina imprimeRejilla */
+]][[
     #imprimeRejilla
     AT @columnaRejilla, @filaRejilla
     CHAR 32 : CHAR 32 : CHAR 32 : CHAR 148 : CHAR 145 : CHAR 145 : CHAR 149 : CHAR 32 : CHAR 32 : CHAR 32
@@ -86,8 +173,7 @@
     CHAR 146 : CHAR 145 : CHAR 145 : CHAR 147 : CHAR 32 : CHAR 32 : CHAR 146 : CHAR 145 : CHAR 145 : CHAR 147
     RETURN
     /**********************************/
-
-    /* Subrutina imprimeValorCasillaRejilla */
+]][[
     #imprimeValorCasillaRejilla
     IF @valorCasillaRejilla < 100 THEN GOTO imprimeValorCasillaRejillaDecenas
     PRINT 99 : RETURN
@@ -97,4 +183,16 @@
     #imprimeValorCasillaRejillaUnidades
     CHAR 32 : PRINT @valorCasillaRejilla : RETURN
     /**********************************/
+]][[
+    #recalcularEstadisticasProta
+    SET puntosVitalesProtagonista TO @PuntosVitales
+    SET proteccionCabezaProtagonista TO @Destreza
+    SET proteccionBrazoIzqProtagonista TO @Suerte
+    SET proteccionBrazoDerProtagonista TO @ProteccionCabeza
+    SET proteccionPiernaIzqProtagonista TO @ProteccionBrazoIzq
+    SET proteccionPiernaDerProtagonista TO @ProteccionBrazoDer
+    SET proteccionCuerpoProtagonista TO @ProteccionPiernaIzq
+    SET destrezaProtagonista TO @ProteccionPiernaDer
+    SET suerteProtagonista TO @ProteccionCuerpo
+    RETURN
 ]]
