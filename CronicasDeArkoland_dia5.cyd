@@ -55,10 +55,43 @@
     CLEAR
     INK 7
 ]][[
+    #GeneracionPersonaje
+    RANDOMIZE
+    #Reroll
+    CLEAR
+
+    SET PuntosVitales TO RANDOM(1 + 18, 12 + 18)
+    SET Destreza TO RANDOM(1,12)
+    SET Suerte TO RANDOM(1 + 3, 12 + 3)
+
+    SET ProteccionCabeza TO RANDOM(1 + 11, 6 + 11)
+    SET ProteccionBrazoIzq TO RANDOM(1 + 10, 6 + 10)
+    SET ProteccionBrazoDer TO RANDOM(1 + 10, 6 + 10)
+    SET ProteccionPiernaIzq TO RANDOM(1 + 10, 6 + 10)
+    SET ProteccionPiernaDer TO RANDOM(1 + 10, 6 + 10)
+    SET ProteccionCuerpo TO RANDOM(1 + 12, 6 + 12)
+
+    SET NumRacionesComida TO 4
+    SET NumDoblones TO RANDOM(1 + 18, 12 + 18)
+
     GOSUB recalcularEstadisticasProta
-    SET idEnemigo TO 6
+    GOSUB imprimeEstadisticasJugador
+
+    INK 7
+    AT 0, 12]]¿Estás satisfecho con estos valores?
+
+[[TAB 4 : OPTION GOTO SimularCombate : INK 4]]Sí.[[INK 7]]
+
+[[TAB 4 : OPTION GOTO Reroll : INK 2]]No.[[
+    INK 7 : CHOOSE
+]][[
+    #SimularCombate
+    CLEAR
+    SET idEnemigo TO 0
+    GOSUB asignarEstadisticasEnemigo
     GOSUB imprimeEstadoCombatientes
     MARGINS 15, 0, 17, 24
+
     CENTER : WAITKEY : END]]
 [[
     #imprimeEstadoCombatientes
@@ -123,25 +156,25 @@
     ]]Demonio[[ RETURN
     #imprimeIdEnemigo9
 
-    ]]DON NADIE[[ RETURN
+    ]]NO IMPLEMENTADO[[ END
     /****************************************/
 ]][[
     #imprimeEstadisticasJugador
-    SET rejillaCabeza TO @ProteccionCabeza
-    SET rejillaBrazoIzq TO @ProteccionBrazoIzq
-    SET rejillaBrazoDer TO @ProteccionBrazoDer
-    SET rejillaPiernaIzq TO @ProteccionPiernaIzq
-    SET rejillaPiernaDer TO @ProteccionPiernaDer
-    SET rejillaCuerpo TO @ProteccionCuerpo
+    SET rejillaCabeza TO @proteccionCabezaProtagonista
+    SET rejillaBrazoIzq TO @proteccionBrazoIzqProtagonista
+    SET rejillaBrazoDer TO @proteccionBrazoDerProtagonista
+    SET rejillaPiernaIzq TO @proteccionPiernaIzqProtagonista
+    SET rejillaPiernaDer TO @proteccionPiernaDerProtagonista
+    SET rejillaCuerpo TO @proteccionCuerpoProtagonista
     SET columnaRejilla TO 21
     SET filaRejilla TO 4
 
     AT 12, 0 : INK 6]]ESTADISTICAS[[
     AT 12, 1 : REPCHAR 145, 12]]
 
-[[INK 5]]- Puntos Vitales: [[INK 7: PRINT @PuntosVitales]]
-[[INK 5]]- Destreza:[[TAB 7 : INK 7 : PRINT @Destreza]]
-[[INK 5]]- Suerte:[[TAB 9 : INK 7: PRINT @Suerte]]
+[[INK 5]]- Puntos Vitales: [[INK 7: PRINT @puntosVitalesProtagonista]]
+[[INK 5]]- Destreza:[[TAB 7 : INK 7 : PRINT @destrezaProtagonista]]
+[[INK 5]]- Suerte:[[TAB 9 : INK 7: PRINT @suerteProtagonista]]
 
 
 [[INK 6]]- Doblones:[[TAB 11 : INK 7: PRINT @NumDoblones]]
@@ -161,7 +194,7 @@
     CHAR 148 : CHAR 145 : CHAR 145 : CHAR 154 : CHAR 145 : CHAR 145 : CHAR 154 : CHAR 145 : CHAR 145 : CHAR 149
     AT @columnaRejilla, @filaRejilla + 3
     CHAR 144 : SET valorCasillaRejilla TO @rejillaBrazoIzq : GOSUB imprimeValorCasillaRejilla
-    CHAR 144 : SET valorCasillaRejilla TO @rejillaCabeza : GOSUB imprimeValorCasillaRejilla
+    CHAR 144 : SET valorCasillaRejilla TO @rejillaCuerpo : GOSUB imprimeValorCasillaRejilla
     CHAR 144 : SET valorCasillaRejilla TO @rejillaBrazoDer : GOSUB imprimeValorCasillaRejilla : CHAR 144
     AT @columnaRejilla, @filaRejilla + 4
     CHAR 150 : CHAR 145 : CHAR 145 : CHAR 154 : CHAR 145 : CHAR 145 : CHAR 154 : CHAR 145 : CHAR 145 : CHAR 151
@@ -186,13 +219,29 @@
 ]][[
     #recalcularEstadisticasProta
     SET puntosVitalesProtagonista TO @PuntosVitales
-    SET proteccionCabezaProtagonista TO @Destreza
-    SET proteccionBrazoIzqProtagonista TO @Suerte
-    SET proteccionBrazoDerProtagonista TO @ProteccionCabeza
-    SET proteccionPiernaIzqProtagonista TO @ProteccionBrazoIzq
-    SET proteccionPiernaDerProtagonista TO @ProteccionBrazoDer
-    SET proteccionCuerpoProtagonista TO @ProteccionPiernaIzq
-    SET destrezaProtagonista TO @ProteccionPiernaDer
-    SET suerteProtagonista TO @ProteccionCuerpo
+    SET proteccionCabezaProtagonista TO @ProteccionCabeza
+    SET proteccionBrazoIzqProtagonista TO @ProteccionBrazoIzq
+    SET proteccionBrazoDerProtagonista TO @ProteccionBrazoDer
+    SET proteccionPiernaIzqProtagonista TO @ProteccionPiernaIzq
+    SET proteccionPiernaDerProtagonista TO @ProteccionPiernaDer
+    SET proteccionCuerpoProtagonista TO @ProteccionCuerpo
+    SET destrezaProtagonista TO @Destreza
+    SET suerteProtagonista TO @Suerte
     RETURN
+    /****************************************/
+]][[
+    #asignarEstadisticasEnemigo
+    IF @idEnemigo > 0 THEN GOTO asignarEstadisticasEnemigo1
+    SET puntosVitalesEnemigo TO 10
+    SET destrezaEnemigo TO 5
+    SET proteccionCabezaEnemigo TO 14
+    SET proteccionBrazoIzqEnemigo TO 10
+    SET proteccionBrazoDerEnemigo TO 10
+    SET proteccionPiernaIzqEnemigo TO 11
+    SET proteccionPiernaDerEnemigo TO 11
+    SET proteccionCuerpoEnemigo TO 13
+    RETURN
+    #asignarEstadisticasEnemigo1
+    /* No implementado*/
+    END
 ]]
