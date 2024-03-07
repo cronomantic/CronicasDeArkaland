@@ -1,0 +1,445 @@
+[[
+    /* Variables */
+    DECLARE 0 AS PuntosVitales
+    DECLARE 7 AS Destreza
+    DECLARE 8 AS Suerte
+
+    DECLARE 1 AS ProteccionCabeza
+    DECLARE 2 AS ProteccionBrazoIzq
+    DECLARE 3 AS ProteccionBrazoDer
+    DECLARE 4 AS ProteccionPiernaIzq
+    DECLARE 5 AS ProteccionPiernaDer
+    DECLARE 6 AS ProteccionCuerpo
+
+    DECLARE 9 AS NumRacionesComida
+    DECLARE 10 AS NumDoblones
+
+    DECLARE 11 AS rejillaCabeza
+    DECLARE 12 AS rejillaBrazoIzq
+    DECLARE 13 AS rejillaBrazoDer
+    DECLARE 14 AS rejillaPiernaIzq
+    DECLARE 15 AS rejillaPiernaDer
+    DECLARE 16 AS rejillaCuerpo
+
+    DECLARE 17 AS filaRejilla
+    DECLARE 18 AS columnaRejilla
+    DECLARE 19 AS valorCasillaRejilla
+
+    DECLARE 20 AS puntosVitalesProtagonista
+    DECLARE 21 AS proteccionCabezaProtagonista
+    DECLARE 22 AS proteccionBrazoIzqProtagonista
+    DECLARE 23 AS proteccionBrazoDerProtagonista
+    DECLARE 24 AS proteccionPiernaIzqProtagonista
+    DECLARE 25 AS proteccionPiernaDerProtagonista
+    DECLARE 26 AS proteccionCuerpoProtagonista
+    DECLARE 27 AS destrezaProtagonista
+    DECLARE 28 AS suerteProtagonista
+
+    DECLARE 29 AS idEnemigo
+    DECLARE 30 AS puntosVitalesEnemigo
+    DECLARE 31 AS proteccionCabezaEnemigo
+    DECLARE 32 AS proteccionBrazoIzqEnemigo
+    DECLARE 33 AS proteccionBrazoDerEnemigo
+    DECLARE 34 AS proteccionPiernaIzqEnemigo
+    DECLARE 35 AS proteccionPiernaDerEnemigo
+    DECLARE 36 AS proteccionCuerpoEnemigo
+    DECLARE 37 AS destrezaEnemigo
+    DECLARE 29 AS resultadoCombate
+
+    DECLARE 38 AS resSuerte
+
+    DECLARE 255 AS tmp1
+    DECLARE 254 AS tmp2
+
+    #Inicio
+    /* Cabecera genérica*/
+    PAGEPAUSE 1
+    BORDER 0
+    BRIGHT 1
+    FLASH 0
+    PAPER 0
+    CLEAR
+    INK 7
+]][[
+    #GeneracionPersonaje
+    RANDOMIZE
+    #Reroll
+    CLEAR
+
+    SET PuntosVitales TO RANDOM(1 + 18, 12 + 18)
+    SET Destreza TO RANDOM(1,12)
+    SET Suerte TO RANDOM(1 + 3, 12 + 3)
+
+    SET ProteccionCabeza TO RANDOM(1 + 11, 6 + 11)
+    SET ProteccionBrazoIzq TO RANDOM(1 + 10, 6 + 10)
+    SET ProteccionBrazoDer TO RANDOM(1 + 10, 6 + 10)
+    SET ProteccionPiernaIzq TO RANDOM(1 + 10, 6 + 10)
+    SET ProteccionPiernaDer TO RANDOM(1 + 10, 6 + 10)
+    SET ProteccionCuerpo TO RANDOM(1 + 12, 6 + 12)
+
+    SET NumRacionesComida TO 4
+    SET NumDoblones TO RANDOM(1 + 18, 12 + 18)
+
+    GOSUB recalcularEstadisticasProta
+    GOSUB imprimeEstadisticasJugador
+
+    INK 7
+    AT 0, 12]]¿Estás satisfecho con estos valores?
+
+[[TAB 4 : OPTION GOTO SimularCombate : INK 4]]Sí.[[INK 7]]
+
+[[TAB 4 : OPTION GOTO Reroll : INK 2]]No.[[
+    INK 7 : CHOOSE
+]][[
+    #SimularCombate
+    SET idEnemigo TO 0
+    GOSUB Combate
+    MARGINS 0, 0, 32, 24
+    CLEAR
+
+    CENTER : WAITKEY : END
+]][[
+    #Combate
+    CLEAR
+    GOSUB asignarEstadisticasEnemigo
+    GOSUB imprimeEstadoCombatientes
+    MARGINS 15, 0, 17, 24
+    CLEAR
+
+    #rondaCombate
+    /*Comenzamos combate*/
+    #turnoJugador
+    SET tmp1 TO 0
+]]Es tu turno, ¿Que deseas hacer?
+
+[[OPTION GOTO ataqueJugadorNormal]]Atacar
+[[OPTION GOTO ataqueJugadorSuerte]]Confío en la suerte
+
+[[
+    SET tmp1 TO 0
+    CHOOSE
+    #ataqueJugadorSuerte
+    GOSUB tiradaSuerte
+    SET tmp1 TO 1
+    #ataqueJugadorNormal
+    SET tmp2 TO RANDOM(1, 12)
+    SET tmp2 TO @tmp2 + @destrezaProtagonista
+    IF @tmp1 = 0 THEN GOTO sinTiradaDeSuerte
+    IF @resSuerte = 0 THEN GOTO malaTiradaDeSuerte
+    /* Buena tirada de suerte */
+    SET tmp2 TO @tmp2 + 1
+    GOTO sinTiradaDeSuerte
+    #malaTiradaDeSuerte
+    SET tmp2 TO @tmp2 - 1
+    #sinTiradaDeSuerte
+    /* Parte del cuerpo a atacar */
+    SET tmp1 TO RANDOM(1, 6)
+    #atacasCabeza
+    IF @tmp1 > 1 THEN GOTO atacasBrazoDerecho
+]]Atacas a la cabeza con [[PRINT @tmp2]].
+[[
+    SET tmp1 TO @tmp2 - @proteccionCabezaEnemigo
+    GOTO resultadoAtaqueProtagonista
+    #atacasBrazoDerecho
+    IF @tmp1 > 2 THEN GOTO atacasBrazoIzquierdo
+]]Atacas al brazo derecho con [[PRINT @tmp2]].
+[[
+    SET tmp1 TO @tmp2 - @proteccionBrazoDerEnemigo
+    GOTO resultadoAtaqueProtagonista
+    #atacasBrazoIzquierdo
+    IF @tmp1 > 3 THEN GOTO atacasPiernaDerecha
+]]Atacas al brazo izquierdo con [[PRINT @tmp2]].
+[[
+    SET tmp1 TO @tmp2 - @proteccionBrazoIzqEnemigo
+    GOTO resultadoAtaqueProtagonista
+    #atacasPiernaDerecha
+    IF @tmp1 > 4 THEN GOTO atacasPiernaIzquierda
+]]Atacas la pierna derecha con [[PRINT @tmp2]].
+[[
+    SET tmp1 TO @tmp2 - @proteccionPiernaDerEnemigo
+    GOTO resultadoAtaqueProtagonista
+    #atacasPiernaIzquierda
+    IF @tmp1 > 5 THEN GOTO atacasCuerpo
+]]Atacas la pierna izquierda con [[PRINT @tmp2]].
+[[
+    SET tmp1 TO @tmp2 - @proteccionPiernaIzqEnemigo
+    GOTO resultadoAtaqueProtagonista
+    #atacasCuerpo
+]]Atacas al torso con [[PRINT @tmp2]].
+[[
+    SET tmp1 TO @tmp2 - @proteccionCuerpoEnemigo
+    #resultadoAtaqueProtagonista
+    IF @tmp1 > 0 THEN GOTO resultadoAtaqueProtagonistaExito
+]]¡No consigues hacer daño a [[GOSUB imprimeIdEnemigo]]!
+[[  GOTO FinTurnoJugador
+    #resultadoAtaqueProtagonistaExito
+]]Hieres a [[GOSUB imprimeIdEnemigo]] con [[PRINT @tmp1]].
+[[
+    SET puntosVitalesEnemigo TO @puntosVitalesEnemigo - @tmp1
+    #FinTurnoJugador
+    WAITKEY
+    GOSUB imprimeEstadoCombatientes
+    MARGINS 15, 0, 17, 24
+    CLEAR
+    /* Revisar estado */
+    IF @puntosVitalesEnemigo = 0 THEN GOTO victoriaCombate
+    IF @puntosVitalesProtagonista = 0 THEN GOTO derrotaCombate
+
+    /* Turno del enemigo */
+    #turnoEnemigo
+    SET tmp1 TO 0
+    GOSUB imprimeIdEnemigo]] te ataca, ¿Que deseas hacer?
+
+[[OPTION GOTO defensaJugadorNormal]]Defender
+[[OPTION GOTO defensaJugadorSuerte]]Confío en la suerte
+
+[[
+    SET tmp1 TO 0
+    CHOOSE
+    #defensaJugadorSuerte
+    GOSUB tiradaSuerte
+    SET tmp1 TO 1
+    #defensaJugadorNormal
+    SET tmp2 TO RANDOM(1, 12)
+    SET tmp2 TO @tmp2 + @destrezaEnemigo
+    IF @tmp1 = 0 THEN GOTO sinTiradaDeSuerteDef
+    IF @resSuerte = 0 THEN GOTO malaTiradaDeSuerteDef
+    /* Buena tirada de suerte */
+    SET tmp2 TO @tmp2 - 1
+    GOTO sinTiradaDeSuerteDef
+    #malaTiradaDeSuerteDef
+    SET tmp2 TO @tmp2 + 1
+    #sinTiradaDeSuerteDef
+    /* Parte del cuerpo atacada */
+    SET tmp1 TO RANDOM(1, 6)
+    #golpeCabeza
+    IF @tmp1 > 1 THEN GOTO golpeBrazoDerecho
+]]Recibes un golpe en la cabeza de [[PRINT @tmp2]].
+[[
+    SET tmp1 TO @tmp2 - @proteccionCabezaProtagonista
+    GOTO resultadoAtaqueEnemigo
+    #golpeBrazoDerecho
+    IF @tmp1 > 2 THEN GOTO golpeBrazoIzquierdo
+]]Recibes un golpe en el brazo derecho de [[PRINT @tmp2]].
+[[
+    SET tmp1 TO @tmp2 - @proteccionBrazoDerProtagonista
+    GOTO resultadoAtaqueEnemigo
+    #golpeBrazoIzquierdo
+    IF @tmp1 > 3 THEN GOTO golpePiernaDerecha
+]]Recibes un golpe en el brazo izquierdo de [[PRINT @tmp2]].
+[[
+    SET tmp1 TO @tmp2 - @proteccionBrazoIzqProtagonista
+    GOTO resultadoAtaqueEnemigo
+    #golpePiernaDerecha
+    IF @tmp1 > 4 THEN GOTO golpePiernaIzquierda
+]]Recibes un golpe en la pierna derecha de [[PRINT @tmp2]].
+[[
+    SET tmp1 TO @tmp2 - @proteccionPiernaDerProtagonista
+    GOTO resultadoAtaqueEnemigo
+    #golpePiernaIzquierda
+    IF @tmp1 > 5 THEN GOTO golpeCuerpo
+]]Recibes un golpe en la pierna izquierda de [[PRINT @tmp2]].
+[[
+    SET tmp1 TO @tmp2 - @proteccionPiernaIzqProtagonista
+    GOTO resultadoAtaqueEnemigo
+    #golpeCuerpo
+]]Recibes un golpe en el torso de [[PRINT @tmp2]].
+[[
+    SET tmp1 TO @tmp2 - @proteccionCuerpoProtagonista
+    #resultadoAtaqueEnemigo
+    IF @tmp1 > 0 THEN GOTO resultadoAtaqueEnemigoExito
+]]¡Has conseguido defenderte!
+[[  GOTO FinTurnoEnemigo
+    #resultadoAtaqueEnemigoExito
+]]Resultas herido con [[PRINT @tmp1]].
+[[
+    SET puntosVitalesProtagonista TO @puntosVitalesProtagonista - @tmp1
+    #FinTurnoEnemigo
+    WAITKEY
+    GOSUB imprimeEstadoCombatientes
+    MARGINS 15, 0, 17, 24
+    CLEAR
+    /* revisar estado */
+    IF @puntosVitalesEnemigo = 0 THEN GOTO victoriaCombate
+    IF @puntosVitalesProtagonista = 0 THEN GOTO derrotaCombate
+    GOTO rondaCombate
+
+    #victoriaCombate
+]]¡Has vencido al [[GOSUB imprimeIdEnemigo]]![[
+    WAITKEY
+    SET resultadoCombate TO 0
+    RETURN
+    #derrotaCombate
+]]¡[[GOSUB imprimeIdEnemigo]] te ha matado![[
+    WAITKEY
+    SET resultadoCombate TO 1
+    RETURN
+    /****************************************/
+]][[
+    #imprimeEstadoCombatientes
+    MARGINS 0, 0, 15, 24
+    CLEAR
+    SET rejillaCabeza TO @proteccionCabezaProtagonista
+    SET rejillaBrazoIzq TO @proteccionBrazoIzqProtagonista
+    SET rejillaBrazoDer TO @proteccionBrazoDerProtagonista
+    SET rejillaPiernaIzq TO @proteccionPiernaIzqProtagonista
+    SET rejillaPiernaDer TO @proteccionPiernaDerProtagonista
+    SET rejillaCuerpo TO @proteccionCuerpoProtagonista
+
+    AT 0, 2 ]]P.V.:[[ PRINT @puntosVitalesProtagonista
+    AT 0, 4 ]]Des.:[[ PRINT @destrezaProtagonista
+    AT 0, 6 ]]Sue.:[[ PRINT @suerteProtagonista
+    AT 0, 8 ]]Dob.:[[ PRINT @NumDoblones
+    SET columnaRejilla TO 6
+    SET filaRejilla TO 2
+    GOSUB imprimeRejilla
+
+    SET rejillaCabeza TO @proteccionCabezaEnemigo
+    SET rejillaBrazoIzq TO @proteccionBrazoIzqEnemigo
+    SET rejillaBrazoDer TO @proteccionBrazoDerEnemigo
+    SET rejillaPiernaIzq TO @proteccionPiernaIzqEnemigo
+    SET rejillaPiernaDer TO @proteccionPiernaDerEnemigo
+    SET rejillaCuerpo TO @proteccionCuerpoEnemigo
+    AT 0, 13 : GOSUB imprimeIdEnemigo
+    AT 0, 16 ]]P.V.:[[ PRINT @puntosVitalesEnemigo
+    AT 0, 18 ]]Des.:[[ PRINT @destrezaEnemigo
+    SET columnaRejilla TO 6
+    SET filaRejilla TO 14
+    GOSUB imprimeRejilla
+    RETURN
+    /****************************************/
+]][[
+    #imprimeIdEnemigo
+    IF @idEnemigo > 0 THEN GOTO imprimeIdEnemigo1
+    ]]Hombre Lagarto[[ RETURN
+    #imprimeIdEnemigo1
+    IF @idEnemigo > 1 THEN GOTO imprimeIdEnemigo2
+    ]]Jinete[[ RETURN
+    #imprimeIdEnemigo2
+    IF @idEnemigo > 2 THEN GOTO imprimeIdEnemigo3
+    ]]Goblin[[ RETURN
+    #imprimeIdEnemigo3
+    IF @idEnemigo > 3 THEN GOTO imprimeIdEnemigo4
+    ]]Rey Fantasma[[ RETURN
+    #imprimeIdEnemigo4
+    IF @idEnemigo > 4 THEN GOTO imprimeIdEnemigo5
+    ]]Dragón[[ RETURN
+    #imprimeIdEnemigo5
+    IF @idEnemigo > 5 THEN GOTO imprimeIdEnemigo6
+    ]]Troll[[ RETURN
+    #imprimeIdEnemigo6
+    IF @idEnemigo > 6 THEN GOTO imprimeIdEnemigo7
+    ]]Monstruo de Gelatina[[ RETURN
+    #imprimeIdEnemigo7
+    IF @idEnemigo > 7 THEN GOTO imprimeIdEnemigo8
+    ]]Demonio[[ RETURN
+    #imprimeIdEnemigo8
+    IF @idEnemigo > 8 THEN GOTO imprimeIdEnemigo9
+    ]]Demonio[[ RETURN
+    #imprimeIdEnemigo9
+
+    ]]NO IMPLEMENTADO[[ END
+    /****************************************/
+]][[
+    #imprimeEstadisticasJugador
+    SET rejillaCabeza TO @proteccionCabezaProtagonista
+    SET rejillaBrazoIzq TO @proteccionBrazoIzqProtagonista
+    SET rejillaBrazoDer TO @proteccionBrazoDerProtagonista
+    SET rejillaPiernaIzq TO @proteccionPiernaIzqProtagonista
+    SET rejillaPiernaDer TO @proteccionPiernaDerProtagonista
+    SET rejillaCuerpo TO @proteccionCuerpoProtagonista
+    SET columnaRejilla TO 21
+    SET filaRejilla TO 4
+
+    AT 12, 0 : INK 6]]ESTADISTICAS[[
+    AT 12, 1 : REPCHAR 145, 12]]
+
+[[INK 5]]- Puntos Vitales: [[INK 7: PRINT @puntosVitalesProtagonista]]
+[[INK 5]]- Destreza:[[TAB 7 : INK 7 : PRINT @destrezaProtagonista]]
+[[INK 5]]- Suerte:[[TAB 9 : INK 7: PRINT @suerteProtagonista]]
+
+
+[[INK 6]]- Doblones:[[TAB 11 : INK 7: PRINT @NumDoblones]]
+[[INK 4]]- Raciones de comida: [[INK 7: PRINT @NumRacionesComida]]
+[[INK 5: AT 20, 3 ]]- Protección:[[
+    INK 7 
+    GOSUB imprimeRejilla
+    RETURN
+    /****************************************/
+]][[
+    #imprimeRejilla
+    AT @columnaRejilla, @filaRejilla
+    CHAR 32 : CHAR 32 : CHAR 32 : CHAR 148 : CHAR 145 : CHAR 145 : CHAR 149 : CHAR 32 : CHAR 32 : CHAR 32
+    AT @columnaRejilla, @filaRejilla + 1
+    CHAR 32 : CHAR 32 : CHAR 32 : CHAR 144 : SET valorCasillaRejilla TO @rejillaCabeza : GOSUB imprimeValorCasillaRejilla : CHAR 144 : CHAR 32 : CHAR 32 : CHAR 32
+    AT @columnaRejilla, @filaRejilla + 2
+    CHAR 148 : CHAR 145 : CHAR 145 : CHAR 154 : CHAR 145 : CHAR 145 : CHAR 154 : CHAR 145 : CHAR 145 : CHAR 149
+    AT @columnaRejilla, @filaRejilla + 3
+    CHAR 144 : SET valorCasillaRejilla TO @rejillaBrazoIzq : GOSUB imprimeValorCasillaRejilla
+    CHAR 144 : SET valorCasillaRejilla TO @rejillaCuerpo : GOSUB imprimeValorCasillaRejilla
+    CHAR 144 : SET valorCasillaRejilla TO @rejillaBrazoDer : GOSUB imprimeValorCasillaRejilla : CHAR 144
+    AT @columnaRejilla, @filaRejilla + 4
+    CHAR 150 : CHAR 145 : CHAR 145 : CHAR 154 : CHAR 145 : CHAR 145 : CHAR 154 : CHAR 145 : CHAR 145 : CHAR 151
+    AT @columnaRejilla, @filaRejilla + 5
+    CHAR 144 : SET valorCasillaRejilla TO @rejillaPiernaIzq : GOSUB imprimeValorCasillaRejilla
+    CHAR 144 : CHAR 32 : CHAR 32 : CHAR 144
+    SET valorCasillaRejilla TO @rejillaPiernaDer : GOSUB imprimeValorCasillaRejilla : CHAR 144
+    AT @columnaRejilla, @filaRejilla + 6
+    CHAR 146 : CHAR 145 : CHAR 145 : CHAR 147 : CHAR 32 : CHAR 32 : CHAR 146 : CHAR 145 : CHAR 145 : CHAR 147
+    RETURN
+    /**********************************/
+]][[
+    #imprimeValorCasillaRejilla
+    IF @valorCasillaRejilla < 100 THEN GOTO imprimeValorCasillaRejillaDecenas
+    PRINT 99 : RETURN
+    #imprimeValorCasillaRejillaDecenas
+    IF @valorCasillaRejilla < 10 THEN GOTO imprimeValorCasillaRejillaUnidades
+    PRINT @valorCasillaRejilla : RETURN
+    #imprimeValorCasillaRejillaUnidades
+    CHAR 32 : PRINT @valorCasillaRejilla : RETURN
+    /**********************************/
+]][[
+    #recalcularEstadisticasProta
+    SET puntosVitalesProtagonista TO @PuntosVitales
+    SET proteccionCabezaProtagonista TO @ProteccionCabeza
+    SET proteccionBrazoIzqProtagonista TO @ProteccionBrazoIzq
+    SET proteccionBrazoDerProtagonista TO @ProteccionBrazoDer
+    SET proteccionPiernaIzqProtagonista TO @ProteccionPiernaIzq
+    SET proteccionPiernaDerProtagonista TO @ProteccionPiernaDer
+    SET proteccionCuerpoProtagonista TO @ProteccionCuerpo
+    SET destrezaProtagonista TO @Destreza
+    SET suerteProtagonista TO @Suerte
+    RETURN
+    /****************************************/
+]][[
+    #asignarEstadisticasEnemigo
+    IF @idEnemigo > 0 THEN GOTO asignarEstadisticasEnemigo1
+    SET puntosVitalesEnemigo TO 10
+    SET destrezaEnemigo TO 5
+    SET proteccionCabezaEnemigo TO 14
+    SET proteccionBrazoIzqEnemigo TO 10
+    SET proteccionBrazoDerEnemigo TO 10
+    SET proteccionPiernaIzqEnemigo TO 11
+    SET proteccionPiernaDerEnemigo TO 11
+    SET proteccionCuerpoEnemigo TO 13
+    RETURN
+    #asignarEstadisticasEnemigo1
+    /* No implementado*/
+    END
+]][[
+    #tiradaSuerte
+    SET resSuerte TO RANDOM(1,6)
+    IF @resSuerte <= @suerteProtagonista THEN GOTO buenaSuerte
+]]¡Has tenido MALA SUERTE!
+[[
+    SET resSuerte TO 0
+    SET suerteProtagonista TO @suerteProtagonista-1
+    RETURN
+    #buenaSuerte
+]]¡Has tenido BUENA SUERTE!
+[[
+    SET resSuerte TO 1
+    SET suerteProtagonista TO @suerteProtagonista-1
+    RETURN
+    /****************************************/
+]]
